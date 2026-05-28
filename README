@@ -1,0 +1,35 @@
+Markdown
+# Cost Manager - Microservices Backend API 😊
+
+## Overview
+The Cost Manager is an asynchronous RESTful Web Services final project developed using **Node.js, Express.js, and MongoDB Atlas**. The system is built on a distributed microservices architecture, utilizing the **Computed Design Pattern** for efficient report generation and live data synchronization.
+
+## Team Members
+* **Maor Maimon** * **Dvir Bardugo** 
+## Architecture
+The system is divided into four independent microservices:
+**About Service (Port 3004):** Returns developer team details.
+**Users Service (Port 3002):** Manages user data and handles the real-time incrementation of total costs (`addtotal` endpoint).
+**Costs Service (Port 3003):** Manages cost insertions and builds monthly reports. Uses caching for past months and live queries for current/future months.
+**Logs Service (Port 3001):** A cross-cutting service that records every incoming HTTP request and endpoint access across all other services in a dedicated database collection.
+
+## Design Pattern: Computed Pattern
+To optimize database read operations, this project implements the Computed Design Pattern:
+1. **Running Totals:** When a new cost is added via the Costs Service, it asynchronously updates the user's running total in the Users Service.
+2. **Report Caching:** Monthly reports for *past* months are computed once and stored in a `reports` collection. Subsequent requests fetch the cached report instantly. Current and future months are computed on the fly to guarantee real-time accuracy.
+
+## Setup & Installation
+1. Extract the project files.
+2. Open a terminal in each of the four service directories and install the dependencies:
+'' npm install ''
+Ensure a .env file is present in each service with the required environment variables (e.g., PORT, MONGO_URI, and cross-service URLs).
+
+Running the Application
+Start each microservice by running the following command in their respective directories:
+'' npm start ''
+Note: Ensure your network allows MongoDB Atlas connections.
+
+Testing
+The project is fully compatible with the provided test_all.py script.
+Ensure the users database collection contains the initial mock user (ID: 123123) before running the test suite.
+'' python test_all.py  ''
